@@ -167,27 +167,29 @@ export const worldIdNavigation = [
 	{
 		title: 'Introduction',
 		links: [
-			{ title: 'What is World ID?', href: '/world-id' },
+			{ title: 'Quick Start', href: '/world-id' },
 			{ title: 'Core Concepts', href: '/world-id/concepts' },
-			{ title: 'Try it Out', href: '/world-id/try' },
 		],
 	},
 	{
-		title: 'Quick Start',
+		title: 'ID Kit',
 		links: [
-			{ title: 'Template Repositories', href: '/world-id/quick-start/templates' },
-			{ title: 'Installation', href: '/world-id/quick-start/installation' },
-			{ title: 'Configuration', href: '/world-id/quick-start/configuration' },
-			{ title: 'Testing', href: '/world-id/quick-start/testing' },
-		],
-	},
-	{
-		title: 'Incognito Actions',
-		links: [
+			{ title: 'Getting Started', href: '/world-id/id/getting-started' },
+			{ title: 'Integrate on web (React)', href: '/world-id/id/web-react' },
+			{ title: 'Integrate on web (Vanilla)', href: '/world-id/id/web-vanilla' },
+			{ title: 'Integrate on mobile', href: '/world-id/id/mobile' },
 			{ title: 'Cloud Verification', href: '/world-id/id/cloud' },
-			{ title: 'Libraries', href: '/world-id/id/libraries' },
 			{ title: 'On-Chain Verification', href: '/world-id/id/on-chain' },
-			{ title: 'Common Pitfalls', href: '/world-id/id/pitfalls' },
+			{ title: 'Libraries', href: '/world-id/id/libraries' },
+			{ title: 'Testing', href: '/world-id/id/testing' },
+			{ title: 'Design Guidelines', href: '/world-id/id/design-guidelines' },
+		],
+	},
+	{
+		title: 'Sign in with World ID',
+		links: [
+			{ title: 'Getting Started', href: '/world-id/sign-in/getting-started' },
+			{ title: 'OIDC Explainer', href: '/world-id/sign-in/oidc' },
 		],
 	},
 	{
@@ -197,20 +199,18 @@ export const worldIdNavigation = [
 			{ title: 'API Reference', href: '/world-id/reference/api' },
 			{ title: 'Sign In Reference', href: '/world-id/reference/sign-in' },
 			{ title: 'Smart Contracts', href: '/world-id/reference/contracts' },
-			{ title: 'Address Book', href: '/world-id/reference/address-book' },
+			{ title: 'Contract Deployments', href: '/world-id/reference/contract-deployments' },
 			{ title: 'Errors', href: '/world-id/reference/errors' },
-			{ title: 'World ID 2.0 Migration Guide', href: '/world-id/reference/world-id-2-migration-guide' },
 		],
 	},
-	{
-		title: 'Further Reading',
-		links: [
-			{ title: 'OIDC Explainer', href: '/world-id/further-reading/oidc' },
-			{ title: 'Protocol Internals', href: '/world-id/further-reading/protocol-internals' },
-			{ title: 'Zero-Knowledge Proofs', href: '/world-id/further-reading/zero-knowledge-proofs' },
-			{ title: 'World ID Reset', href: '/world-id/further-reading/world-id-reset' },
-		],
-	},
+	// Temporarily hiding until we update the content
+	// {
+	// 	title: 'Further Reading',
+	// 	links: [
+	// 		{ title: 'Protocol Internals', href: '/world-id/further-reading/protocol-internals' },
+	// 		{ title: 'Zero-Knowledge Proofs', href: '/world-id/further-reading/zero-knowledge-proofs' },
+	// 	],
+	// },
 ]
 
 export const miniAppsNavigation = [
@@ -225,7 +225,7 @@ export const miniAppsNavigation = [
 			{ title: 'Commands', href: '/mini-apps/quick-start/commands' },
 			{ title: 'Responses', href: '/mini-apps/quick-start/responses' },
 			{ title: 'Testing', href: '/mini-apps/quick-start/testing' },
-			{ title: 'Mini Apps', href: '/mini-apps/quick-start/app-store' },
+			{ title: 'Mini App Store', href: '/mini-apps/quick-start/app-store' },
 		],
 	},
 	{
@@ -243,25 +243,41 @@ export const miniAppsNavigation = [
 			{ title: 'Sign Message', href: '/mini-apps/commands/sign-message' },
 			{ title: 'Sign Typed Data', href: '/mini-apps/commands/sign-typed-data' },
 			{ title: 'Share Contacts', href: '/mini-apps/commands/share-contacts' },
-			{ title: 'Send Notifications', href: '/mini-apps/commands/send-notifications' },
-			{ title: 'Get Permissions', href: '/mini-apps/commands/get-permissions' },
+			{ title: `Request Permission`, href: '/mini-apps/commands/request-permission' },
+			{ title: `Get Permissions`, href: '/mini-apps/commands/get-permissions' },
 			{ title: 'Send Haptic Feedback', href: '/mini-apps/commands/send-haptic-feedback' },
+			{ title: 'Share', href: '/mini-apps/commands/share' },
 		],
 	},
 	{
 		title: 'Technical Reference',
 		links: [
+			{ title: 'Init', href: '/mini-apps/reference/init' },
 			{ title: 'API Reference', href: '/mini-apps/reference/api' },
 			{ title: 'Errors', href: '/mini-apps/reference/errors' },
 			{ title: 'Address Book', href: '/mini-apps/reference/address-book' },
 			{ title: 'Usernames', href: '/mini-apps/reference/usernames' },
 			{ title: 'Status Page', href: '/mini-apps/reference/status-page' },
 			{ title: 'Payment Methods', href: '/mini-apps/reference/payment-methods' },
+			{ title: 'Microphone', href: '/mini-apps/reference/microphone' },
 		],
 	},
 	{
-		title: 'Virality',
-		links: [{ title: 'Sharing', href: '/mini-apps/virality/sharing' }],
+		title: 'Growth Playbook',
+		links: [
+			{ title: 'Overview', href: '/mini-apps/growth' },
+			{ title: 'Invites & Viral Loops', href: '/mini-apps/growth/invites-viral' },
+			{ title: 'Gamification', href: '/mini-apps/growth/gamification' },
+			{ title: 'Retention via Notifications', href: '/mini-apps/growth/notifications' },
+			{ title: 'Data & Analytics', href: '/mini-apps/growth/analytics' },
+		],
+	},
+	{
+		title: 'Notifications',
+		links: [
+			{ title: 'Features & Guidelines', href: '/mini-apps/notifications/features-and-guidelines' },
+			{ title: 'How To Send Notifications', href: '/mini-apps/notifications/how-to-send-notifications' },
+		],
 	},
 	{
 		title: 'Design Standards',
@@ -291,14 +307,11 @@ export const miniAppsNavigation = [
 	{
 		title: 'Further Reading',
 		links: [
-			{ title: 'Security', href: '/mini-apps/more/security' },
 			{ title: 'Mini Apps Policy', href: '/mini-apps/more/policy' },
-			{ title: 'Promotion', href: '/mini-apps/more/promotion' },
-			{ title: 'Grants', href: '/mini-apps/more/grants' },
-			{ title: 'Developer Rewards Pilot', href: '/mini-apps/more/developer-rewards-pilot' },
-			{ title: 'Troubleshooting', href: '/mini-apps/more/troubleshooting' },
 			{ title: 'Webview Specifications', href: '/mini-apps/more/webview-spec' },
 			{ title: 'Releases', href: '/mini-apps/more/releases' },
+			{ title: 'Community Tools & Perks', href: '/mini-apps/more/community-tools-perks' },
+			{ title: 'FAQ', href: '/mini-apps/more/faq' },
 		],
 	},
 ]
@@ -352,7 +365,7 @@ export const worldChainNavigation = [
 	{
 		title: 'Technical Reference',
 		links: [
-			{ title: 'Address Book', href: '/world-chain/reference/address-book' },
+			{ title: 'Useful Contract Deployments', href: '/world-chain/reference/useful-contracts' },
 			{ title: 'Set up a node', href: '/world-chain/reference/node-setup' },
 		],
 	},
@@ -360,8 +373,8 @@ export const worldChainNavigation = [
 		title: 'Tokens',
 		links: [
 			{ title: 'Bridging an L1 token to World Chain', href: '/world-chain/tokens/bridging' },
-
 			{ title: 'Superchain Token Bridging', href: '/world-chain/tokens/superchain-token' },
+			{ title: 'USDC on World Chain Quick Start', href: '/world-chain/tokens/usdc' },
 		],
 	},
 	{

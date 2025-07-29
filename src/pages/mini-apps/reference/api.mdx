@@ -2,6 +2,156 @@ import { Link } from '@/components/Link'
 
 # API Reference
 
+### Base URL
+
+```
+https://developer.worldcoin.org
+```
+
+## Verify Proof {{ tag: "POST", label: "/api/v2/verify/{app_id}" }}
+
+<Row><Col>
+
+Enables you to verify a World ID proof for a **Cloud action.** To ensure sybil-resistance, by default, a single person can only verify once for every action. The number of allowed verifications for a single user can be configured in the Developer Portal.
+
+### Request Body
+
+<Properties>
+	<Property name="nullifier_hash" type="string" required={true}>
+		The unique user identifier (called the nullifier hash in the ZKP), as provided by IDKit. See [IDKit
+		response](/world-id/reference/idkit#types) for details.
+	</Property>
+	<Property name="proof" type="string" required={true}>
+		The zero-knowledge proof, as provided by IDKit. See [IDKit response](/world-id/reference/idkit#types) for
+		details.
+	</Property>
+	<Property name="merkle_root" type="string" required={true}>
+		Part of the ZKP, the hash of the Merkle root that proves membership to the set of credentials. As provided by
+		IDKit. See [IDKit response](/world-id/reference/idkit#types) for details.
+	</Property>
+	<Property name="verification_level" type="string" required={true}>
+		The verification level, as provided by IDKit. See [IDKit response](/world-id/reference/idkit#types) for details.
+	</Property>
+	<Property name="action" type="string" required={true}>
+		Same action identifier as passed to IDKit.
+	</Property>
+	<Property name="signal_hash" type="string" defaultValue="hashToField('').digest">
+		The hash of the signal that was used to generate the proof. Defaults to the hash of an empty string.
+	</Property>
+	<Property name="max_age" type="number" required={false} min={3600} max={604800} defaultValue={7200}>
+		The maximum age of the root in seconds. This parameter controls how old the Merkle root used in the proof can
+		be. Minimum value is 3600 (1 hour) and maximum value is 604800 (7 days). Defaults to 7200 (2 hours).
+	</Property>
+</Properties>
+
+### Possible Responses
+
+-   `200 OK` - The proof was successfully verified.
+-   `400 Bad Request` - The proof was invalid or the user has already verified for this action.
+
+</Col><Col sticky>
+
+<CodeGroup title="Request" tag="POST" label="/api/v2/verify/{app_id}">
+
+```bash {{ title: "cURL" }}
+curl -X POST "/api/v2/verify/{app_id}" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "nullifier_hash": "0x2bf8406809dcefb1486dadc96c0a897db9bab002053054cf64272db512c6fbd8",
+        "merkle_root": "0x2264a66d162d7893e12ea8e3c072c51e785bc085ad655f64c10c1a61e00f0bc2",
+        "proof": "0x1aa8b8f3b2d2de5ff452c0e1a83e29d6bf46fb83ef35dc5957121ff3d3698a1119090fb...",
+        "verification_level": "orb",
+        "action": "my_action",
+        "signal_hash": "0x00c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a4",
+        "max_age": 3600
+    }'
+```
+
+```js
+fetch(apiUrl, {
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json',
+	},
+	body: JSON.stringify({
+		nullifier_hash: '0x2bf8406809dcefb1486dadc96c0a897db9bab002053054cf64272db512c6fbd8',
+		merkle_root: '0x2264a66d162d7893e12ea8e3c072c51e785bc085ad655f64c10c1a61e00f0bc2',
+		proof: '0x1aa8b8f3b2d2de5ff452c0e1a83e29d6bf46fb83ef35dc5957121ff3d3698a1119090fb...',
+		verification_level: 'orb',
+		action: 'my_action',
+		signal_hash: '0x00c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a4',
+		max_age: 3600,
+	}),
+})
+```
+
+</CodeGroup>
+
+<CodeGroup title="Response">
+
+```json {{ title: "200 OK" }}
+{
+	"success": true,
+	"action": "my_action",
+	"nullifier_hash": "0x2bf8406809dcefb1486dadc96c0a897db9bab002053054cf64272db512c6fbd8",
+	"created_at": "2023-02-18T11:20:39.530041+00:00"
+}
+```
+
+```json {{ title: "400 Invalid Proof" }}
+{
+	"code": "invalid_proof",
+	"detail": "The provided proof is invalid and it cannot be verified. Please check all inputs and try again.",
+	"attribute": null
+}
+```
+
+```json {{ title: "400 Invalid Merkle Root" }}
+{
+	"code": "invalid_merkle_root",
+	"detail": "The provided Merkle root is invalid. User appears to be unverified.",
+	"attribute": null
+}
+```
+
+```json {{ title: "400 Root Too Old" }}
+{
+	"code": "root_too_old",
+	"detail": "The provided merkle root is too old. Please generate a new proof and try again.",
+	"attribute": null
+}
+```
+
+```json {{ title: "400 Invalid Credential Type" }}
+{
+	"code": "invalid",
+	"detail": "Invalid credential type.",
+	"attribute": "credential_type"
+}
+```
+
+```json {{ title: "400 User Exceeded Maximum Verifications" }}
+{
+	"code": "exceeded_max_verifications",
+	"detail": "This user has exceeded the maximum number of verifications allowed for this proof.",
+	"attribute": null
+}
+```
+
+```json {{ title: "400 User Already Verified" }}
+{
+	"code": "already_verified",
+	"detail": "This person has already verified for this action.",
+	"attribute": null
+}
+```
+
+</CodeGroup>
+
+</Col></Row>
+
+<hr />
+
 ## Send Notification{{ tag: "POST", label: "https://developer.worldcoin.org/api/v2/minikit/send-notification" }}
 
 This endpoint lets you send notifications to users of your mini app and requires an `api_key`.
@@ -14,10 +164,10 @@ This endpoint lets you send notifications to users of your mini app and requires
             The `wallet_addresses` is an array of wallet addresses to send the notification to. Users must have opted in to notifications for your app. Max 1000 users per call.
             </Property>
             <Property name="title" type="string" required={true}>
-            The `title` is the title of the notification. It should be 30 characters or less.
+            The `title` is the title of the notification. It should be 30 characters or less. May contain emojis.
             </Property>
             <Property name="message" type="string" required={true}>
-            The `message` is the message of the notification. It should be 200 characters or less.
+            The `message` is the message of the notification. It should be 200 characters or less. You can include the special variable `${username}` in your message, which will be replaced with the actual username of the recipient when the notification is delivered.
             </Property>
             <Property name="mini_app_path" type="string" required={true}>
             The `mini_app_path` is the url encoded path of the mini app where your notification should link to when the user clicks on it. <br/><br/> Should be of the format `worldapp://mini-app?app_id=[app_id]&path=[path]` (path is optional).
@@ -41,7 +191,7 @@ This endpoint lets you send notifications to users of your mini app and requires
             curl -X POST "https://developer.worldcoin.org/api/v2/minikit/send-notification" \
                 -H "Authorization: Bearer {api_key}" \
                 -H "Content-Type: application/json" \
-                -d '{"app_id": "app_id", "wallet_addresses": ["0x123", "0x456"], "title": "title", "message": "message", "mini_app_path": "mini_app_path"}'
+                -d '{"app_id": "app_id", "wallet_addresses": ["0x123", "0x456"], "title": "title", "message": "Hello ${username}, your transaction is complete!", "mini_app_path": "mini_app_path"}'
             ```
             ```js
             fetch(apiUrl, {
@@ -53,7 +203,7 @@ This endpoint lets you send notifications to users of your mini app and requires
                     app_id: "app_id",
                     wallet_addresses: ["0x123", "0x456"],
                     title: "title",
-                    message: "message",
+                    message: "Hello ${username}, your transaction is complete!",
                     mini_app_path: "mini_app_path"
                 })
             })
@@ -126,7 +276,7 @@ This endpoint lets you send notifications to users of your mini app and requires
     <Col>
         <CodeGroup title="Request" tag="GET" label="https://developer.worldcoin.org/api/v2/minikit/transaction/{transaction_id}">
             ```bash {{ title: "cURL" }}
-            curl -X GET "https://developer.worldcoin.org/api/v2/minikit/transaction/{transaction_id}" 
+            curl -X GET "https://developer.worldcoin.org/api/v2/minikit/transaction/{transaction_id}"
             ```
             ```js
             fetch(apiUrl, {
@@ -185,7 +335,7 @@ This endpoint lets you send notifications to users of your mini app and requires
                 "chain": "worldchain",
                 "timestamp": "2024-01-01T00:00:00.000Z", // ISO 8601
                 "token_amount": "100000000", // amount in BigInt with 6 decimals
-                "token": "USDCE",
+                "token": "USDC",
                 "to": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
                 "app_id": "app_9a73963d73efdf2e7d9472593dc9dffd"
             }
@@ -287,7 +437,7 @@ This endpoint lets you send notifications to users of your mini app and requires
 </Row>
 <hr/>
 
-## Get Prices {{ tag: "GET", label: "https://app-backend.worldcoin.dev/public/v1/miniapps/prices?cryptoCurrencies=WLD,USDCE&fiatCurrencies=" }}
+## Get Prices {{ tag: "GET", label: "https://app-backend.worldcoin.dev/public/v1/miniapps/prices?cryptoCurrencies=WLD,USDC&fiatCurrencies=" }}
 
 <Row>
     <Col>
@@ -304,7 +454,7 @@ We offer this as a service to make it easier to use WLD as a currency.
          <Properties>
             <Property name="cryptoCurrencies" type="string" required={true}>
             The `cryptoCurrencies` is a comma-separated list of currencies we support.
-            eg. `USDCE,WLD`
+            eg. `USDC,WLD`
             </Property>
         </Properties>
 
@@ -358,7 +508,7 @@ Detailed are a just a few values in the return that could be confusing. See the 
                                 "symbol": "USD"
                             },
                         },
-                        "USDCE": {
+                        "USDC": {
                             "USD": {
                                 "asset": "USD",
                                 "amount": "1000058",
@@ -367,6 +517,111 @@ Detailed are a just a few values in the return that could be confusing. See the 
                             },
                         }
                     }
+                }
+            }
+            ```
+        </CodeGroup>
+    </Col>
+</Row>
+<hr/>
+
+## Get User Grant Cycle{{ tag: "GET", label: "https://developer.worldcoin.org/api/v2/minikit/user-grant-cycle" }}
+
+<Row>
+    <Col>
+        This endpoint lets you retrieve the next grant claim date for a user of your mini app. You will only be able to
+        query for users who have installed your app and have an active grant cycle.
+
+        ### Query Params
+        <Properties>
+            <Property name="wallet_address" type="string" required={true}>
+            The `wallet_address` of the user to query. Must be exactly 42 characters long.
+            </Property>
+            <Property name="app_id" type="string" required={true}>
+            The `app_id` of your mini app.
+            </Property>
+        </Properties>
+
+        ### Request Headers
+        <Properties>
+            <Property name="Authorization" type="string" required={true}>
+            The `Authorization` header should be the `api_key` for your app from the Developer Portal. Make sure to
+            prefix it with `Bearer {api_key}`.
+            </Property>
+        </Properties>
+    </Col>
+    <Col>
+        <CodeGroup title="Request" tag="GET" label="https://developer.worldcoin.org/api/v2/minikit/user-grant-cycle">
+            ```bash {{ title: "cURL" }}
+            curl -X GET "https://developer.worldcoin.org/api/v2/minikit/user-grant-cycle?wallet_address={wallet_address}&app_id={app_id}" \
+                -H "Authorization: Bearer {api_key}"
+            ```
+            ```js
+            const params = new URLSearchParams({
+                wallet_address: "{wallet_address}",
+                app_id: "{app_id}"
+            });
+
+            fetch(`https://developer.worldcoin.org/api/v2/minikit/user-grant-cycle?${params}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer {api_key}',
+                }
+            })
+            ```
+        </CodeGroup>
+    </Col>
+
+</Row>
+<hr/>
+### Response
+<Row>
+    <Col>
+        <Properties>
+            <Property name="success" type="boolean">
+            Indicates if the API request was successful.
+            </Property>
+            <Property name="status" type="number">
+            The HTTP status code of the response.
+            </Property>
+            <Property name="result" type="object">
+            The result object containing:
+                - `nextGrantClaimUTCDate` (string): The UTC date when the user's next grant can be claimed, in ISO 8601 format
+            </Property>
+        </Properties>
+
+        ### Error Responses
+        <Properties>
+            <Property name="user_not_found_for_wallet_address" type="error">
+            The specified wallet address was not found in the system.
+            </Property>
+            <Property name="app_not_installed" type="error">
+            The user has not installed the specified mini app.
+            </Property>
+            <Property name="no_active_grant_cycles" type="error">
+            The user does not have any active grant cycles.
+            </Property>
+        </Properties>
+    </Col>
+    <Col>
+        <CodeGroup title="Response">
+            ```json {{ title: "Success" }}
+            {
+                "success": true,
+                "status": 200,
+                "result": {
+                    "nextGrantClaimUTCDate": "2024-12-31T00:00:00.000Z"
+                }
+            }
+            ```
+            ```json {{ title: "Error" }}
+            {
+                "success": false,
+                "status": 400,
+                "error": {
+                    "code": "user_not_found_for_wallet_address",
+                    "message": "User not found for the provided wallet address",
+                    "attribute": "user_grant_cycle"
                 }
             }
             ```
